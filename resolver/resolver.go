@@ -2,13 +2,15 @@ package resolver
 
 import (
 	"fmt"
-	"go-cyclic/errors"
-	"go-cyclic/sprite"
 	"go/parser"
 	"go/token"
-	"golang.org/x/mod/modfile"
-	"io/ioutil"
+	"os"
 	"strings"
+
+	"golang.org/x/mod/modfile"
+
+	"github.com/elza2/go-cyclic/errors"
+	"github.com/elza2/go-cyclic/sprite"
 )
 
 var (
@@ -18,29 +20,39 @@ var (
 )
 
 // ParseDir parse path.
-func ParseDir(dir string) string {
+func ParseDir(dir string) (path string, err error) {
+	stat, err := os.Stat(dir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return "", errors.PathNotExist(dir)
+		}
+		return "", err
+	}
+	if !stat.IsDir() {
+		return "", errors.PathNotIsFile(dir)
+	}
 	idx := strings.LastIndex(dir, "/")
 	if idx == -1 {
-		return dir
+		return dir, nil
 	}
-	return dir[idx+1:]
+	return dir[idx+1:], nil
 }
 
-func ParseGoModule(dir string) (moduleName string, err error) {
-	readFile, err := ioutil.ReadFile(dir + "/" + GoMod)
+func ParseGoModule(dir string) (module string, err error) {
+	readFile, err := os.ReadFile(dir + "/" + GoMod)
 	if err != nil {
-		return "", errors.GoModNotExist
+		return "", errors.GoModNotExist(dir)
 	}
 	modFile, err := modfile.Parse(GoMod, readFile, nil)
 	if err != nil {
-		return "", errors.GoModParseFailed
+		return "", errors.GoModParseFailed(dir)
 	}
 	return modFile.Module.Mod.Path, nil
 }
 
 func ParseNodeSprite(root string, module string, dir string) (nodes []*sprite.NodeSprite, err error) {
 	nodeSprites := make([]*sprite.NodeSprite, 0)
-	files, err := ioutil.ReadDir(dir)
+	files, err := os.ReadDir(dir)
 	if err != nil {
 		return nil, err
 	}

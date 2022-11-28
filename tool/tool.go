@@ -1,21 +1,29 @@
 package tool
 
 import (
-	"go-cyclic/resolver"
-	"go-cyclic/sprite"
-	"go-cyclic/topology"
+	"github.com/elza2/go-cyclic/resolver"
+	"github.com/elza2/go-cyclic/sprite"
+	"github.com/elza2/go-cyclic/topology"
+	"path/filepath"
 )
 
 func CheckCycleDepend(dir string) error {
+	abs, err := filepath.Abs(dir)
+	if err != nil {
+		return err
+	}
 	// parse root path.
-	root := resolver.ParseDir(dir)
+	root, err := resolver.ParseDir(abs)
+	if err != nil {
+		return err
+	}
 	// parse module name.
-	module, err := resolver.ParseGoModule(dir)
+	module, err := resolver.ParseGoModule(abs)
 	if err != nil {
 		return err
 	}
 	// parse sprite nodes by path.
-	sprites, err := resolver.ParseNodeSprite(root, module, dir)
+	sprites, err := resolver.ParseNodeSprite(root, module, abs)
 	if err != nil {
 		return err
 	}

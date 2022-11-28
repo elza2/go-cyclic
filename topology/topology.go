@@ -2,9 +2,10 @@ package topology
 
 import (
 	"fmt"
-	"github.com/fatih/color"
-	"go-cyclic/sprite"
 	"strings"
+
+	"github.com/elza2/go-cyclic/sprite"
+	"github.com/fatih/color"
 )
 
 var (

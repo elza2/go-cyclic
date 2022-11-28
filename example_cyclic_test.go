@@ -1,8 +1,9 @@
 package main
 
 import (
-	"go-cyclic/tool"
 	"testing"
+
+	"github.com/elza2/go-cyclic/tool"
 )
 
 func TestCyclic(t *testing.T) {

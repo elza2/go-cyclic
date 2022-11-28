@@ -1,9 +1,11 @@
-package actions
+package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"go-cyclic/tool"
 	"log"
+
+	"github.com/spf13/cobra"
+
+	"github.com/elza2/go-cyclic/tool"
 )
 
 func RunCyclic(cmd *cobra.Command, args []string) {
@@ -12,7 +14,7 @@ func RunCyclic(cmd *cobra.Command, args []string) {
 		log.Fatalf("get dir params failed: %v\n", err)
 	}
 	if err = tool.CheckCycleDepend(dir); err != nil {
-		log.Fatalf("run failed: %v\n", err)
+		log.Fatalf("run failed. %v\n", err)
 	}
 }
 

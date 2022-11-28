@@ -1,4 +1,4 @@
-module go-cyclic
+module github.com/elza2/go-cyclic
 
 go 1.18
 

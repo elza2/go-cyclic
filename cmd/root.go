@@ -1,12 +1,13 @@
-package actions
+package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"log"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
-const Service = "go-cyclic"
+const Service = "github.com/elza2/go-cyclic"
 
 var (
 	rootCmd = &cobra.Command{Use: Service}
