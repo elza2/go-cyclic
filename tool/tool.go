@@ -1,14 +1,20 @@
 package tool
 
 import (
+	"path/filepath"
+
 	"github.com/elza2/go-cyclic/resolver"
 	"github.com/elza2/go-cyclic/sprite"
 	"github.com/elza2/go-cyclic/topology"
-	"path/filepath"
 )
 
-func CheckCycleDepend(dir string) error {
-	abs, err := filepath.Abs(dir)
+type Params struct {
+	Dir     string
+	Filters []string
+}
+
+func CheckCycleDepend(params *Params) error {
+	abs, err := filepath.Abs(params.Dir)
 	if err != nil {
 		return err
 	}
@@ -23,7 +29,7 @@ func CheckCycleDepend(dir string) error {
 		return err
 	}
 	// parse sprite nodes by path.
-	sprites, err := resolver.ParseNodeSprite(root, module, abs)
+	sprites, err := resolver.ParseNodeSprite(root, module, abs, params.Filters)
 	if err != nil {
 		return err
 	}

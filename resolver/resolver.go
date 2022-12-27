@@ -5,6 +5,7 @@ import (
 	"go/parser"
 	"go/token"
 	"os"
+	"regexp"
 	"strings"
 
 	"golang.org/x/mod/modfile"
@@ -50,7 +51,7 @@ func ParseGoModule(dir string) (module string, err error) {
 	return modFile.Module.Mod.Path, nil
 }
 
-func ParseNodeSprite(root string, module string, dir string) (nodes []*sprite.NodeSprite, err error) {
+func ParseNodeSprite(root string, module string, dir string, filters []string) (nodes []*sprite.NodeSprite, err error) {
 	nodeSprites := make([]*sprite.NodeSprite, 0)
 	files, err := os.ReadDir(dir)
 	if err != nil {
@@ -67,6 +68,9 @@ func ParseNodeSprite(root string, module string, dir string) (nodes []*sprite.No
 				nodeImports[key] = append(nodeImports[key], port.Path.Value[1:len(port.Path.Value)-1])
 			}
 			filePath, nodeName := GetNodeSpritePathName(key)
+			if HasFilterSprite(nodeName, filters) {
+				continue
+			}
 			nodeSprites = append(nodeSprites, &sprite.NodeSprite{
 				FilePath:    filePath,
 				RootName:    root,
@@ -79,7 +83,7 @@ func ParseNodeSprite(root string, module string, dir string) (nodes []*sprite.No
 	}
 	for _, file := range files {
 		if file.IsDir() {
-			sprites, err := ParseNodeSprite(root, module, fmt.Sprintf("%s/%s", dir, file.Name()))
+			sprites, err := ParseNodeSprite(root, module, fmt.Sprintf("%s/%s", dir, file.Name()), filters)
 			if err != nil {
 				return sprites, err
 			}
@@ -96,4 +100,13 @@ func GetNodeSpritePathName(content string) (filePath, nodeName string) {
 	}
 	index := strings.LastIndex(content, "/")
 	return content[:index], content[index+1:]
+}
+
+func HasFilterSprite(name string, filters []string) bool {
+	for _, p := range filters {
+		if regexp.MustCompile("^" + p + "$").MatchString(name) {
+			return true
+		}
+	}
+	return false
 }

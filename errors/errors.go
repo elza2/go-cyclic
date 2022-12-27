@@ -20,3 +20,7 @@ func GoModNotExist(filepath string) error {
 func GoModParseFailed(filepath string) error {
 	return errors.New(fmt.Sprintf("path: %v/go.mod, go.mod file parse failed.", filepath))
 }
+
+func NotSupportCNComma() error {
+	return errors.New("not supported `，` symbol, please use `,` split")
+}

@@ -41,11 +41,9 @@ func ConstructorTopology(nodeSprites *sprite.NodeSprites) (topology *Topology) {
 	}
 	sprites := nodeSprites.GetNodeSprites()
 	for _, sp := range sprites {
-		if !strings.Contains(sp.PackageName, test) {
-			relation := topology.RelationTopology(nodeSprites, sp)
-			topology.Degrees[sp.GetAllPath()] = len(relation)
-			topology.Relations = append(topology.Relations, relation...)
-		}
+		relation := topology.RelationTopology(nodeSprites, sp)
+		topology.Degrees[sp.GetAllPath()] = len(relation)
+		topology.Relations = append(topology.Relations, relation...)
 	}
 	return topology
 }
@@ -53,13 +51,22 @@ func ConstructorTopology(nodeSprites *sprite.NodeSprites) (topology *Topology) {
 func (topology *Topology) RelationTopology(nodeSprites *sprite.NodeSprites, node *sprite.NodeSprite) [][]*sprite.NodeSprite {
 	depends := make([][]*sprite.NodeSprite, 0)
 	for _, in := range node.GetImportNames() {
+		pack := in[strings.LastIndex(in, "/")+1:]
 		sprites := nodeSprites.MatchImportNodeSprite(in)
+		packMap := map[string]int{}
 		for _, nodeSprite := range sprites {
-			if strings.Contains(nodeSprite.PackageName, test) {
-				continue
-			}
-			if node.GetAllPath() != nodeSprite.GetAllPath() {
-				depends = append(depends, []*sprite.NodeSprite{node, nodeSprite})
+			packMap[nodeSprite.PackageName] = 1
+		}
+		for _, nodeSprite := range sprites {
+			if len(packMap) == 1 {
+				if node.GetAllPath() != nodeSprite.GetAllPath() {
+					depends = append(depends, []*sprite.NodeSprite{node, nodeSprite})
+				}
+			} else {
+				if pack == nodeSprite.PackageName &&
+					node.GetAllPath() != nodeSprite.GetAllPath() {
+					depends = append(depends, []*sprite.NodeSprite{node, nodeSprite})
+				}
 			}
 		}
 	}

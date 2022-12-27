@@ -7,7 +7,8 @@
 ```bash
 go install github.com/elza2/go-cyclic@latest
 # path 路径要设置为 go.mod 文件所在的路径.
-go-cyclic gocyclic --dir .path
+# filter 过滤匹配的文件, 多个条件使用逗号隔开(,)
+go-cyclic gocyclic --dir .path [--filter *_test.go]
 ```
 
 运行测试
@@ -15,7 +16,7 @@ go-cyclic gocyclic --dir .path
 ```bash
 git clone https://github.com/elza2/go-cyclic.git
 # path 路径要设置为 go.mod 文件所在的路径.
-go run ./main.go gocyclic --dir .path
+go run ./main.go gocyclic --dir .path  [--filter *_test.go]
 ```
 
 运行结果
