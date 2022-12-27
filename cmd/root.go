@@ -21,5 +21,6 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().String("dir", os.Getenv("dir"), "dir. eg: full path of the go.mod file")
+	rootCmd.PersistentFlags().String("dir", os.Getenv("dir"), "dir. eg: directory address of the go.mod file")
+	rootCmd.PersistentFlags().String("filter", os.Getenv("filter"), "dir. eg: filters out files of the specified type. separate multiple types with commas (,)")
 }

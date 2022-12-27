@@ -7,5 +7,8 @@ import (
 )
 
 func TestCyclic(t *testing.T) {
-	tool.CheckCycleDepend("/Users/yuanyou/go/src/daji")
+	tool.CheckCycleDepend(&tool.Params{
+		Dir:     "../daji",
+		Filters: []string{},
+	})
 }
