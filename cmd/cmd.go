@@ -47,11 +47,3 @@ func HandleFilters(filter string) (filters []string, err error) {
 	}
 	return filters, nil
 }
-
-func init() {
-	cmd := &cobra.Command{
-		Use: "gocyclic",
-		Run: RunCyclic,
-	}
-	rootCmd.AddCommand(cmd)
-}
