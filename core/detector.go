@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/fatih/color"
@@ -358,6 +359,9 @@ func (c *CyclicDetector) QueryCycleNodes(
 }
 
 func PrintCycle(cycle []string) {
+	sort.Slice(cycle, func(i, j int) bool {
+		return cycle[i] > cycle[j]
+	})
 	downMark, vertical, startPre, endPre := "↓", "┆", "┌---→", "└--- "
 	output := make([]string, 0)
 	length := -1
