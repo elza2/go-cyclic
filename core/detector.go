@@ -135,7 +135,7 @@ func (c *CyclicDetector) Parse() error {
 	}
 
 	c.AbsPath = abs
-	c.RootPath = abs[strings.LastIndex(abs, "/")+1:]
+	c.RootPath = abs[strings.LastIndex(abs, string(os.PathSeparator))+1:]
 	c.ModuleName = modFile.Module.Mod.Path
 
 	if err = c.ParseFilters(c.SourceFilter); err != nil {
@@ -196,7 +196,8 @@ func (c *CyclicDetector) ParseNodeResolver(path string) ([]*NodeResolver, error)
 				continue
 			}
 			for _, imp := range value.Imports {
-				importValues[key] = append(importValues[key], imp.Path.Value[1:len(imp.Path.Value)-1])
+				impPathValue := imp.Path.Value[1 : len(imp.Path.Value)-1]
+				importValues[key] = append(importValues[key], strings.ReplaceAll(impPathValue, "/", string(os.PathSeparator)))
 			}
 			relFilePath := strings.ReplaceAll(filePath, c.AbsPath, "")
 			nodeResolvers = append(nodeResolvers, &NodeResolver{
@@ -227,11 +228,11 @@ func (c *CyclicDetector) ParseNodeResolver(path string) ([]*NodeResolver, error)
 }
 
 func GetNodePathName(content string) (filePath, nodeName string) {
-	contains := strings.Contains(content, "/")
+	contains := strings.Contains(content, string(os.PathSeparator))
 	if !contains {
 		return content, content
 	}
-	index := strings.LastIndex(content, "/")
+	index := strings.LastIndex(content, string(os.PathSeparator))
 	return content[:index], content[index+1:]
 }
 
@@ -250,7 +251,7 @@ func (c *CyclicDetector) buildNodeRelation() ([][]*NodeResolver, map[string]int)
 	for _, node := range c.NodeResolvers {
 		depends := make([][]*NodeResolver, 0)
 		for _, in := range node.ImportValues {
-			subPkg := in[strings.LastIndex(in, "/")+1:]
+			subPkg := in[strings.LastIndex(in, string(os.PathSeparator))+1:]
 			pkgs := c.NodePackageMap[in]
 			pkgMap := make(map[string]int, 0)
 			simple := true
