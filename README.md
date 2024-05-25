@@ -1,31 +1,49 @@
-# go-cyclic
+# 🧐🔗 go-cyclic
+<hr/>
 
-<h4> Go 循环依赖检测工具 </h4>
+[ English | [中文](README_zh.md) ]
 
-快速开始
-===============
+⚡ Circular dependency detection tool for Go ⚡
+
+## 🤔 What is go-cyclic?
+In the development process of Go applications, cyclic dependencies between packages are a common problem. This kind of situation usually leads to compilation errors. Specifically, execute the prompt of `import cycle not allowed`. When the project scale expands and dependencies become complex, identifying and solving circular reference problems becomes more challenging, often resulting in a lot of time and effort.
+
+It is in view of this pain point that the `go-cyclic` tool came into being. It was originally designed to help developers locate circular reference problems in projects efficiently and accurately. Through intelligent analysis, `go-cyclic` can quickly reveal the specific location of cyclic dependencies, thus greatly simplifying the troubleshooting process and ensuring the health and maintainability of the project. It is a powerful assistant for optimizing the structure of large projects and improving development efficiency. .
+
+The following are examples of where circular dependencies can occur.
 ```bash
-go install github.com/elza2/go-cyclic@latest
-# path 路径要设置为 go.mod 文件所在的路径.
-# filter 过滤匹配的文件, 多个条件使用逗号隔开(,)
-go-cyclic run --dir .path [--filter *_test.go]
+# a.go                       # b.go
+package a                    package b
+
+import "b"                   import "a"
+
+type A struct {              type B struct {
+  B *b.B                       A *a.A
+}                            }
 ```
 
-运行测试
-===============
+## Quick Start
+Install command.
 ```bash
-git clone https://github.com/elza2/go-cyclic.git
-# path 路径要设置为 go.mod 文件所在的路径.
-go run ./main.go run --dir .path [--filter *_test.go]
+go install github.com/elza2/go-cyclic
 ```
-
-运行结果
-===============
+Run command.
 ```bash
-# success output.
+go-cyclic run --dir .
+```
+Parameters of go-cyclic:<br/>
+`--dir` path parameter. Tip: The set directory must be the directory where the go.mod file is located.<br/>
+`--filter` (optional) filter parameters. Tip: Filter matching files and do not participate in loop detection. Multiple conditions are separated by commas and expressions are supported, such as `--filter *_test.go,a_test.go`<br/>
+
+## Results display
+1. The detection is normal and there is no circular dependency.
+
+```bash
 Success. Not circular dependence.
+```
 
-# failed output.
+2. Detection failed, there is a circular dependency.
+```bash
 Failed. 1 circular dependence chains were found.
 
 ┌---→    app.go
@@ -34,5 +52,3 @@ Failed. 1 circular dependence chains were found.
 ┆          ↓
 └---    handler.go
 ```
-
-
