@@ -1,8 +1,9 @@
 package core_test
 
 import (
-	"go-cyclic/core"
 	"testing"
+
+	"github.com/elza2/go-cyclic/core"
 )
 
 func TestSimpleCyclic(t *testing.T) {

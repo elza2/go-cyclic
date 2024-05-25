@@ -1,8 +1,9 @@
 package simple_cyclic_test
 
 import (
-	"go-cyclic/example/three_cyclic2/a"
 	"testing"
+
+	"go-cyclic/example/three_cyclic2/a"
 )
 
 func TestCyclic(t *testing.T) {
