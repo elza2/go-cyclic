@@ -25,7 +25,7 @@ type A struct {              type B struct {
 ## Quick Start
 Install command.
 ```bash
-go install github.com/elza2/go-cyclic
+go install github.com/elza2/go-cyclic@latest
 ```
 Run command.
 ```bash
